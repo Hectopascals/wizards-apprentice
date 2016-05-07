@@ -1,3 +1,10 @@
+/*
+	Ethan Han
+	Henry Hoang
+	Shelumiel Mordido
+	TOJAM 2016
+*/
+
 #include <iostream>
 using std::cout;
 using std::endl;
