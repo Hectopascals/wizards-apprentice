@@ -1,7 +1,7 @@
 #ifndef CELL_CC
 #define CELL_CC
 
-#include "character.cc"
+#include "characters.cc"
 
 class Cell {
 	// MARK: Members
@@ -38,6 +38,12 @@ public:
 	void setCoords(unsigned int r, unsigned int c) {  // Setter
 		row = r;
 		col = c;
+	}
+	void setContent(Character *c) { // Setter
+		content = c;
+	}
+	Character * getContent() { // Getter
+		return content;
 	}
 };
 #endif

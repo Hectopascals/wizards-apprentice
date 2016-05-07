@@ -34,4 +34,35 @@ public:
 	virtual void attack() = 0;
 	virtual void move() = 0;
 };
+
+class Wizard : public Character {
+	// MARK: Members
+	// MARK: Member routines	
+public:
+	// Constructor
+	Wizard(Cell *loc)
+		: Character(loc, 100, 100, 100, 'W') {
+
+	}
+	// Destructor
+	~Wizard() {}
+	// Virtuals
+	void attack() {}
+	void move() {}
+};
+
+class Minotaur : public Character {
+public:
+	// Constructor
+	Minotaur(Cell *loc)
+		: Character(loc, 150, 60, 50, 'M') {
+
+	}
+	// Destructor
+	~Minotaur() {}
+	// Virtuals
+	void attack() {}
+	void move() {}
+};
+
 #endif

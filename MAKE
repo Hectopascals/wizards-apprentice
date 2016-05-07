@@ -3,9 +3,9 @@
 g++ -c wizapp.cc
 #g++ -c game.cc
 g++ -c cell.cc
-g++ -c character.cc
-g++ -c wizard.cc
+g++ -c characters.cc
+#g++ -c enemies.cc
 
-g++ wizapp.o cell.o character.o wizard.o -o wizapp
+g++ wizapp.o cell.o characters.o -o wizapp
 
 ./wizapp
