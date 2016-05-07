@@ -3,8 +3,6 @@
 
 #include "character.cc"
 
-class Character;
-
 class Cell {
 	// MARK: Members
 	// cell info
@@ -22,7 +20,11 @@ public:
 	Cell() {}
 	// Destructor
 	~Cell() {}
+
 	char display() { // Getter
+		return char_display;
+	}
+	char occupierDisplay() { // Getter
 		return content == 0 ? char_display : content->display();
 	}
 	void setEnergy(int e) { // Setter

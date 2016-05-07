@@ -2,6 +2,7 @@
 #define GAME_CC
 
 #include "cell.cc"
+#include "wizard.cc"
 //#include <vector>
 //using std::vector;
 #include <iostream>
@@ -42,6 +43,11 @@ public:
 				grid[r][c].setEnergy(energy(r, c));
 			}
 		}
+		// generate 3 wizards
+		for (int i = 0; i < 3; i++) {
+			Wizard *wiz = new Wizard(grid[i * 7][i * 3]);
+		}
+		// generate 9 enemies
 	}
 	// Destructor
 	~Game() {
@@ -54,7 +60,7 @@ public:
 	void printGame() {
 		for (unsigned int r = 0; r < rows; r++) {
 			for (unsigned int c = 0; c < cols; c++) {
-				cout << grid[r][c].display();
+				cout << grid[r][c].occupierDisplay();
 			}
 			cout << endl;
 		}
