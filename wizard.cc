@@ -6,7 +6,8 @@
 
 class Wizard : public Character {
 	// MARK: Members
-	// MARK: Member routines
+	// MARK: Member routines	
+public:
 	// Constructor
 	Wizard(Cell *loc)
 		: Character(loc, 100, 100, 100, 'W') {
@@ -15,7 +16,7 @@ class Wizard : public Character {
 	// Destructor
 	~Wizard() {}
 	// Virtuals
-	void attack() {}
+	void attack() { int x = 0; x++; }
 	void move() {}
 };
 #endif

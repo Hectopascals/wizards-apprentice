@@ -1,8 +1,6 @@
 #ifndef CHARACTER_CC
 #define CHARACTER_CC
 
-#include "cell.cc"
-
 class Cell;
 
 class Character {

@@ -17,7 +17,11 @@ class Cell {
 	// MARK: Member routines
 public:
 	// Constructor
-	Cell() {}
+	Cell(unsigned int r, unsigned int c, int e) 
+		: row(r), col(c), energy(e) {
+		content = 0;
+		char_display = '0' + energy;
+	}
 	// Destructor
 	~Cell() {}
 
