@@ -1,0 +1,10 @@
+#!/bin/bash
+
+g++ -c wizapp.cc
+g++ -c game.cc
+g++ -c cell.cc
+g++ -c character.cc
+
+g++ wizapp.o game.o cell.o character.o -o wizapp
+
+./wizapp
