@@ -1,11 +1,8 @@
 #!/bin/bash
 
 g++ -c wizapp.cc
-#g++ -c game.cc
-g++ -c cell.cc
-g++ -c characters.cc
-#g++ -c enemies.cc
+#g++ -c classes.cc
 
-g++ wizapp.o cell.o characters.o -o wizapp
+g++ wizapp.o -o wizapp
 
 ./wizapp

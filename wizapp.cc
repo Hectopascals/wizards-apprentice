@@ -1,7 +1,6 @@
 /*
 	Ethan Han
 	Henry Hoang
-	Shelumiel Mordido
 	TOJAM 2016
 */
 
@@ -13,10 +12,8 @@ using std::cerr;
 using std::cin;
 using std::endl;
 #include <math.h>
-#include "cell.cc"
-#include "characters.cc"
-
-using std::string;
+#include "classes.cc"
+#include <stdlib.h>
 
 class Game {
 	// MARK: Members
@@ -25,7 +22,6 @@ class Game {
 	const unsigned int cols;
 	vector< vector<Cell *> > grid;
 	// characters
-	vector<Wizard *> wizards;
 	vector<Character *> monsters;
 	Wizard * player;
 	// calculate cell energy
@@ -38,9 +34,20 @@ class Game {
 		if (dist == 0) {
 			e = 9;
 		} else {
-			e = (max / dist) / 3; 
+			e = (max / dist + 4) / 8; 
 		}
 		return e;
+	}
+	// set a cell's neighbours
+	void generateNeighbours(Cell *cell, int r, int c) {
+	    cell->addNeighbour(grid[r - 1][c - 1], 0);
+	    cell->addNeighbour(grid[r - 1][c], 1);
+	    cell->addNeighbour(grid[r - 1][c + 1], 2);
+	    cell->addNeighbour(grid[r][c - 1], 3);
+	    cell->addNeighbour(grid[r][c + 1], 4);
+	    cell->addNeighbour(grid[r + 1][c - 1], 5);
+	    cell->addNeighbour(grid[r + 1][c], 6);
+	    cell->addNeighbour(grid[r + 1][c + 1], 7);
 	}
 
 	// MARK: Member routines
@@ -51,28 +58,47 @@ public:
 		for (unsigned int r = 0; r < rows; r++) {
 			grid[r].resize(cols);
 			for (unsigned int c = 0; c < cols; c++) {
-				grid[r][c] = new Cell(r, c, energy(r, c));
+				if (r == 0 || r == rows - 1) {
+					grid[r][c] = new Cell(r, c, '-');
+				} else if (c == 0 || c == cols - 1) {
+					grid[r][c] = new Cell(r, c, '|');
+				} else {
+					grid[r][c] = new Cell(r, c, energy(r, c));
+				}
+			}
+		}
+		// set neighbours
+		for (unsigned int r = 1; r < rows - 1; r++) {
+			for (unsigned int c = 1; c < cols - 1; c++) {
+				generateNeighbours(grid[r][c], r, c);
 			}
 		}
 		
-		int rowCoords[] = {8, 4, 0, 4};
-		int colCoords[] = {4, 0, 4, 8};
+		int rowCoords[] = {9, 5, 1, 5};
+		int colCoords[] = {5, 1, 5, 9};
 		// player wizard
-		player = new Wizard(grid[rowCoords[0]][colCoords[0]]);
+		player = new Wizard(grid[rowCoords[0]][colCoords[0]], true);
 		grid[rowCoords[0]][colCoords[0]]->setContent(player);
-		wizards.push_back(player);
+
 		// generate 3 wizards
 		for (int i = 1; i < 4; i++) {
-			Wizard *wiz = new Wizard(grid[rowCoords[i]][colCoords[i]]);
+			Wizard *wiz = new Wizard(grid[rowCoords[i]][colCoords[i]], false);
 			grid[rowCoords[i]][colCoords[i]]->setContent(wiz);
-			wizards.push_back(wiz);
+			monsters.push_back(wiz);
 		}
 		// generate 9 enemies
-		/*for (int i = 0; i < 9; i++) {
-			Minotaur *mino = new Minotaur(grid[4][i]);
-			grid[4][i]->setContent(mino);
-			monsters.push_back(mino);
-		}*/
+		for (int i = 0; i < 9; i++) {
+			while (true) {
+				unsigned int rr = rand() % 8 + 1;
+				unsigned int rc = rand() % 8 + 1;
+				if (grid[rr][rc]->hasContent() == false) {
+					Minotaur *mino = new Minotaur(grid[rr][rc]);
+					grid[rr][rc]->setContent(mino);
+					monsters.push_back(mino);
+					break;
+				}
+			}
+		}
 	}
 	// Destructor
 	~Game() {
@@ -80,6 +106,17 @@ public:
 			for (unsigned int c = 0; c < cols; c++) {
 				delete grid[r][c];
 			}
+		}
+	}
+	void executeTurn(string action) {
+		if (action == "gather") {
+			player->gather();
+		} else {
+			player->move(action);
+		}
+		int size = monsters.size();
+		for (int i = 0; i < size; i++) {
+			monsters[i]->tick();
 		}
 	}
 	// print floor/game
@@ -90,18 +127,22 @@ public:
 			}
 			cout << endl;
 		}
+		cout << "You have " << player->energy() << " energy." << endl;
 	}
 };
 
 int main() {
 	cout << "Wizard's Apprentice 1.0.0" << endl;
-	Game *game = new Game(9, 9);
+	unsigned int r = 11;
+	unsigned int c = 11;
+	Game *game = new Game(r, c);
 	game->printGame();
 
-	// parse turns
-	/*string turn;
+	string action;
 	while (true) {
-		cin >> turn;
-
-	}*/
+		cout << "What will you do?" << endl;
+		cin >> action;
+		game->executeTurn(action);
+		game->printGame();
+	}
 }
