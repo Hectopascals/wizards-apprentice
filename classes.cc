@@ -75,7 +75,7 @@ class Cell {
 			return getNeighbour(d);
 		}
 		bool isWall() {
-			return char_display == '|' || char_display == '-';
+			return char_display == '|' || char_display == '-' || char_display == 'v';
 		}
 };
 
@@ -94,7 +94,7 @@ class Character {
 			: location(loc), hp(hp), att(att), def(def), char_display(d) {
 		}
 		// Destructor
-		~Character() {}
+		virtual ~Character() {}
 
 		char display() { // Getter
 			return char_display;
@@ -125,6 +125,14 @@ class Character {
 			}
 			return "nothing";
 		}
+		void changehp(int delta) { // HP Updater
+			hp = hp + delta;
+			hp = hp > 100 ? 100 : hp;
+			hp = hp < 0 ? 0 : hp;
+		}
+		int gethp() { // Getter
+			return hp;
+		}
 		// Virtuals
 		virtual void tick() = 0;
 		virtual void attack(string dir) = 0;
@@ -149,8 +157,8 @@ class Wizard : public Character {
 		}
 		// Virtuals
 		void tick() {
-			cout << "Wizard ticking." << endl;
-			
+			//cout << "Wizard ticking." << endl;
+
 		}
 		void attack(string dir) {}
 		void move(string dir) {
@@ -185,7 +193,8 @@ class Minotaur : public Character {
 				if (n->isWall() || !n->hasContent()) {
 					continue;
 				}
-				if (n->getContent()->display() == 'P') {
+				if (n->getContent()->display() == 'P' ||
+						n->getContent()->display() == 'W') {
 					attack(getDirection(i));
 					return;
 				}
@@ -194,7 +203,7 @@ class Minotaur : public Character {
 			Cell *n;
 			while (true) {
 				d = rand() % 8; // 0-7
-				cout << d << endl;
+				//cout << d << endl;
 				n = location->getNeighbour(d);
 				if (n->hasContent() || n->isWall()) {
 					continue;
@@ -205,11 +214,23 @@ class Minotaur : public Character {
 			move(getDirection(d));
 		}
 		void attack(string dir) {
-			cout << "Minotaur attacking." << endl;
+			//cout << "Minotaur attacking." << endl;
+			int damage = 30;
+			Cell * n = location->getNeighbour(dir);
+			n->getContent()->changehp(damage * -1);
+
+			Wizard *c = (Wizard *)(n->getContent());
+			if (c->gethp() <= 0) {
+				cout << "A wizard has been killed. "
+						<< c->energy()
+						<< " energy has been dropped somewhere."
+						<< endl;
+				// remove wizard from game ... memory free'd from Game obj
+				n->setContent(0);
+				c->setLocation(0);
+			}
 		}
 		void move(string dir) {
-			cout << "Minotaur moving." << endl;
-			cout << dir << endl;
 			Cell * newLocation = location->getNeighbour(dir);
 			newLocation->setContent(this);
 			location->setContent(0);

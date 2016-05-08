@@ -58,7 +58,9 @@ public:
 		for (unsigned int r = 0; r < rows; r++) {
 			grid[r].resize(cols);
 			for (unsigned int c = 0; c < cols; c++) {
-				if (r == 0 || r == rows - 1) {
+				if (r == 10 && c == 5) {
+					grid[r][c] = new Cell(r, c, 'v');
+				} else if (r == 0 || r == rows - 1) {
 					grid[r][c] = new Cell(r, c, '-');
 				} else if (c == 0 || c == cols - 1) {
 					grid[r][c] = new Cell(r, c, '|');
@@ -107,6 +109,11 @@ public:
 				delete grid[r][c];
 			}
 		}
+		int size = monsters.size();
+		for (int i = 0; i < size; i++) {
+			delete monsters[i];
+		}
+		delete player;
 	}
 	void executeTurn(string action) {
 		if (action == "gather") {
@@ -117,6 +124,9 @@ public:
 		int size = monsters.size();
 		for (int i = 0; i < size; i++) {
 			monsters[i]->tick();
+			if (gameLost()) {
+				return;
+			}
 		}
 	}
 	// print floor/game
@@ -128,6 +138,11 @@ public:
 			cout << endl;
 		}
 		cout << "You have " << player->energy() << " energy." << endl;
+		cout << "You have " << player->gethp() << " health." << endl;
+	}
+	// check if game is lost (player dead)
+	bool gameLost() {
+		return player->gethp() <= 0;
 	}
 };
 
@@ -144,5 +159,10 @@ int main() {
 		cin >> action;
 		game->executeTurn(action);
 		game->printGame();
+
+		if (game->gameLost()) {
+			cout << "You have died." << endl;
+			break;
+		}
 	}
 }
